@@ -11,6 +11,7 @@ const { makeCatalog, REPOSITORY } = require("../scripts/build-catalog.cjs");
 
 const adapter = id => require(`../providers/${id}/adapter.cjs`);
 const digest = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
+const jobDirectory = path.join(os.tmpdir(), "saip-jobs", "one");
 function validatePricing(rows) {
   assert.ok(Array.isArray(rows) && rows.length > 0);
   const seen = new Set();
@@ -162,15 +163,15 @@ test("CLI plans are provider-specific, isolated, and use live verified models", 
   const liveModels = [{ id: "deepseek-flash", efforts: ["low", "high", "max"], defaultEffort: "high" }];
   const deepseek = adapter("deepseek");
   assert.equal(deepseek.cli.models.requiresApiModelList, true);
-  const plan = deepseek.cli.models.buildPlan({ jobDirectory: "C:\\jobs\\one", liveModels });
+  const plan = deepseek.cli.models.buildPlan({ jobDirectory, liveModels });
   assert.deepEqual(plan.files.map(file => file.relativePath), ["deepseek-models.json"]);
   const catalog = JSON.parse(plan.files[0].contents);
   assert.deepEqual(catalog.models.map(row => row.slug), ["deepseek-flash"]);
   assert.deepEqual(catalog.models[0].supported_reasoning_levels.map(row => row.effort), ["low", "high", "max"]);
   assert.ok(plan.args.some(arg => arg.includes('wire_api="responses"')));
-  const inferred = deepseek.cli.models.buildPlan({ jobDirectory: "C:\\jobs\\one", liveModels: [{ id: "deepseek-flash" }] });
+  const inferred = deepseek.cli.models.buildPlan({ jobDirectory, liveModels: [{ id: "deepseek-flash" }] });
   assert.deepEqual(JSON.parse(inferred.files[0].contents).models[0].supported_reasoning_levels.map(row => row.effort), ["low", "high", "max"]);
-  const analysis = deepseek.cli.analysisPlan({ model: "deepseek-flash", effort: "high", prompt: transcript, jobDirectory: "C:\\jobs\\one", verifiedModels: liveModels });
+  const analysis = deepseek.cli.analysisPlan({ model: "deepseek-flash", effort: "high", prompt: transcript, jobDirectory, verifiedModels: liveModels });
   assert.equal(analysis.promptMode, "stdin");
   assert.equal(analysis.args.at(-1), "-");
   assert.equal(JSON.stringify(analysis).includes("secret"), false);
@@ -181,14 +182,14 @@ test("CLI plans are provider-specific, isolated, and use live verified models", 
   assert.ok(claude.args.includes("--tools"));
   assert.ok(claude.args.includes(""));
   assert.equal(claude.args.at(-1), "system\n\nuntrusted input");
-  const kimi = adapter("moonshot").cli.analysisPlan({ model: "kimi-k3", effort: "max", prompt: transcript, jobDirectory: "C:\\jobs\\one" });
+  const kimi = adapter("moonshot").cli.analysisPlan({ model: "kimi-k3", effort: "max", prompt: transcript, jobDirectory });
   assert.equal(kimi.envVars.KIMI_MODEL_THINKING_EFFORT, "max");
   assert.equal(kimi.files.some(file => file.relativePath === "empty-skills/.keep"), true);
   assert.equal(adapter("xai").cli.models.parseOutput({ output: "You are using XAI_API_KEY.\n\nDefault model: grok-4.7\n\nAvailable models:\n  * grok-4.7 (default)\n" }).currentModelId, "grok-4.7");
   assert.equal(adapter("google").cli.models.parseOutput({ output: JSON.stringify({ models: [{ id: "gemini-3.8-flash" }] }) }).models[0].id, "gemini-3.8-flash");
 });
 
-test("usage and source-stamped pricing validate through desktop accounting", () => {
+test("usage and source-stamped pricing validate against the adapter accounting schema", () => {
   for (const id of IDS) {
     const current = adapter(id);
     assert.doesNotThrow(() => validatePricing(current.pricing));
