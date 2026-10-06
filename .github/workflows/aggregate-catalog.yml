@@ -38,6 +38,7 @@ jobs:
         with:
           script: |
             const { MAX_CATALOG_BYTES, MAX_PACKAGE_BYTES, parseReleaseTag, selectNewestReleases, validateReleaseAsset, validateCatalogAsset, selectCatalogRows } = require('./scripts/aggregate-catalog.cjs');
+            const { DISTRIBUTION_BRANCH, DISTRIBUTION_PATH, buildDistributionIndex } = require('./scripts/distribution-index.cjs');
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const repository = `${owner}/${repo}`;
@@ -71,6 +72,7 @@ jobs:
             }
             const newest = selectNewestReleases(releases);
             const verified = new Map();
+            const verifiedArtifacts = new Map();
 
             async function readBounded(url, maxBytes) {
               const response = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(30000) });
@@ -117,6 +119,7 @@ jobs:
                 throw new Error(`Existing catalog row ${expectedRow.id} does not match its verified GitHub release asset.`);
               }
               verified.set(parsed.tag, row);
+              verifiedArtifacts.set(parsed.tag, { release, bytes });
               return row;
             }
 
@@ -167,4 +170,51 @@ jobs:
             if (currentCatalogAsset) await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: currentCatalogAsset.id });
             const uploaded = (await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: catalogRelease.id, name: 'catalog.json', data: catalogBytes, headers: { 'content-type': 'application/json', 'content-length': catalogBytes.length } })).data;
             if (uploaded.size !== catalogBytes.length || uploaded.digest !== `sha256:${catalogHash}`) throw new Error('GitHub catalog asset digest does not match the exact generated catalog bytes.');
-            core.info(`Updated digest-verified catalog with ${next.components.length} providers.`);
+            const distribution = buildDistributionIndex({
+              owner,
+              repo,
+              catalog: next,
+              catalogBytes,
+              catalogAsset: uploaded,
+              providerReleases: next.components.map(row => {
+                const tag = `${row.id}-v${row.version}`;
+                const artifact = verifiedArtifacts.get(tag);
+                if (!artifact) throw new Error(`Verified package bytes are missing for ${tag}.`);
+                return artifact;
+              }),
+              generatedAt: new Date().toISOString(),
+            });
+            const distributionBytes = Buffer.from(`${JSON.stringify(distribution, null, 2)}\n`, 'utf8');
+
+            let distributionRef = null;
+            try {
+              distributionRef = (await github.rest.git.getRef({ owner, repo, ref: `heads/${DISTRIBUTION_BRANCH}` })).data;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            let baseTree = null;
+            const parents = distributionRef ? [distributionRef.object.sha] : [];
+            if (distributionRef) {
+              const baseCommit = (await github.rest.git.getCommit({ owner, repo, commit_sha: distributionRef.object.sha })).data;
+              baseTree = baseCommit.tree.sha;
+            }
+            const treeOptions = {
+              owner,
+              repo,
+              tree: [{ path: DISTRIBUTION_PATH, mode: '100644', type: 'blob', content: distributionBytes.toString('utf8') }],
+            };
+            if (baseTree) treeOptions.base_tree = baseTree;
+            const tree = (await github.rest.git.createTree(treeOptions)).data;
+            const commit = (await github.rest.git.createCommit({
+              owner,
+              repo,
+              message: 'Publish verified tokenless distribution index',
+              tree: tree.sha,
+              parents,
+            })).data;
+            if (distributionRef) {
+              await github.rest.git.updateRef({ owner, repo, ref: `heads/${DISTRIBUTION_BRANCH}`, sha: commit.sha, force: false });
+            } else {
+              await github.rest.git.createRef({ owner, repo, ref: `refs/heads/${DISTRIBUTION_BRANCH}`, sha: commit.sha });
+            }
+            core.info(`Updated digest-verified catalog and tokenless distribution index with ${next.components.length} providers.`);
