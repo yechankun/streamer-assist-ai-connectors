@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "repository": "yechankun/streamer-assist-ai-connectors",
   "abiVersion": 1,
-  "generatedAt": "2026-10-06T18:30:14.979Z",
+  "generatedAt": "2026-10-06T23:37:18.295Z",
   "catalog": {
     "schemaVersion": 1,
     "repository": "yechankun/streamer-assist-ai-connectors",
-    "generatedAt": "2026-10-06T18:30:13.913Z",
+    "generatedAt": "2026-10-06T23:37:17.574Z",
     "abiVersion": 1,
     "components": [
       {
@@ -35,11 +35,11 @@
       },
       {
         "id": "google",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "abiVersion": 1,
-        "asset": "google-v0.1.3.saip.json",
-        "sha256": "1bf8ed3a1f9020de355047fdc8ee8950acef1556f5a82bc43ac5ebda6fd0d2d0",
-        "size": 124219
+        "asset": "google-v0.1.4.saip.json",
+        "sha256": "226f25a589c36dfd13c67b10634e67eb006c0bf8c72b862199bbd091c945ec54",
+        "size": 128607
       },
       {
         "id": "deepseek",
@@ -63,15 +63,15 @@
     "tag_name": "catalog-v1",
     "assets": [
       {
-        "id": 616318927,
+        "id": 616963918,
         "name": "catalog.json",
         "size": 1564,
-        "digest": "sha256:38a2e3c3e6b811504334952ec23c682de2ec0fb2c56050a54ea5a5cfafd11d6b",
+        "digest": "sha256:89e693078c3883b609d915b69d508d19b3c4ea4fe1a10494b1c5c279cd0463d4",
         "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/catalog-v1/catalog.json"
       }
     ]
   },
-  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE4OjMwOjEzLjkxM1oiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS41IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuNS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImFmZDM3NmU1YTM2OTA4MjY2YzRkMWUyMTRhNTgzZWY3M2Q4NmMwMzNhZmUwODY0N2QyZjQxMWRmYjIxNWQ1YzciLAogICAgICAic2l6ZSI6IDEyNDIxOQogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMy5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjA5MTUyNzkzOTQ0MGJmZmJiNzExZTExYzc2NWY0NGI5YjY3MTA1OWZiNDIxNzgwNTA2ZTc3M2NmMDkzMzBlZDAiLAogICAgICAic2l6ZSI6IDEyNDIzNQogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS40IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuNC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImJlNGMxZThiNmYyMmZhNDM3ZThkNzM5NTQyNGUzZDk0YmFmMWRkODNiMTU3YzVjYTY0ZDcyZjkzYTY0ZThlZmIiLAogICAgICAic2l6ZSI6IDEyNDE5OQogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMy5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjFiZjhlZDNhMWY5MDIwZGUzNTUwNDdmZGM4ZWU4OTUwYWNlZjE1NTZmNWE4MmJjNDNhYzVlYmRhNmZkMGQyZDAiLAogICAgICAic2l6ZSI6IDEyNDIxOQogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjMiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjMuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICIxOGRkYTJmNmEyNDQ2OWIzMmFlYmFmNjEwNjk4OTFhNzdjOTE3MGYwYzI4MWU4YTk4NDg2YmFhZGFhMjhlZDRjIiwKICAgICAgInNpemUiOiAxMjQyMzUKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4zLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiOGZhY2NmNzk4MTUxODIzMGM4Yjg3NjMwNWUzYzQ3MGU5NGJkNmEwYWNkZDE0MWJhMzM1Mjc2MDA1YTYxZWEyNSIsCiAgICAgICJzaXplIjogMTI0MjM1CiAgICB9CiAgXQp9Cg==",
+  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDIzOjM3OjE3LjU3NFoiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS41IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuNS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImFmZDM3NmU1YTM2OTA4MjY2YzRkMWUyMTRhNTgzZWY3M2Q4NmMwMzNhZmUwODY0N2QyZjQxMWRmYjIxNWQ1YzciLAogICAgICAic2l6ZSI6IDEyNDIxOQogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMy5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjA5MTUyNzkzOTQ0MGJmZmJiNzExZTExYzc2NWY0NGI5YjY3MTA1OWZiNDIxNzgwNTA2ZTc3M2NmMDkzMzBlZDAiLAogICAgICAic2l6ZSI6IDEyNDIzNQogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS40IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuNC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImJlNGMxZThiNmYyMmZhNDM3ZThkNzM5NTQyNGUzZDk0YmFmMWRkODNiMTU3YzVjYTY0ZDcyZjkzYTY0ZThlZmIiLAogICAgICAic2l6ZSI6IDEyNDE5OQogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS40IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuNC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjIyNmYyNWE1ODljMzZkZmQxM2M2N2IxMDYzNGU2N2ViMDA2YzBiZjhjNzJiODYyMTk5YmJkMDkxYzk0NWVjNTQiLAogICAgICAic2l6ZSI6IDEyODYwNwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjMiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjMuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICIxOGRkYTJmNmEyNDQ2OWIzMmFlYmFmNjEwNjk4OTFhNzdjOTE3MGYwYzI4MWU4YTk4NDg2YmFhZGFhMjhlZDRjIiwKICAgICAgInNpemUiOiAxMjQyMzUKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4zLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiOGZhY2NmNzk4MTUxODIzMGM4Yjg3NjMwNWUzYzQ3MGU5NGJkNmEwYWNkZDE0MWJhMzM1Mjc2MDA1YTYxZWEyNSIsCiAgICAgICJzaXplIjogMTI0MjM1CiAgICB9CiAgXQp9Cg==",
   "releaseReceipts": [
     {
       "tag_name": "openai-v0.1.5",
@@ -110,14 +110,14 @@
       ]
     },
     {
-      "tag_name": "google-v0.1.3",
+      "tag_name": "google-v0.1.4",
       "assets": [
         {
-          "id": 616316763,
-          "name": "google-v0.1.3.saip.json",
-          "size": 124219,
-          "digest": "sha256:1bf8ed3a1f9020de355047fdc8ee8950acef1556f5a82bc43ac5ebda6fd0d2d0",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/google-v0.1.3/google-v0.1.3.saip.json"
+          "id": 616963582,
+          "name": "google-v0.1.4.saip.json",
+          "size": 128607,
+          "digest": "sha256:226f25a589c36dfd13c67b10634e67eb006c0bf8c72b862199bbd091c945ec54",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/google-v0.1.4/google-v0.1.4.saip.json"
         }
       ]
     },
