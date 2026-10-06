@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "repository": "yechankun/streamer-assist-ai-connectors",
   "abiVersion": 1,
-  "generatedAt": "2026-10-06T17:41:31.912Z",
+  "generatedAt": "2026-10-06T17:41:45.065Z",
   "catalog": {
     "schemaVersion": 1,
     "repository": "yechankun/streamer-assist-ai-connectors",
-    "generatedAt": "2026-10-06T17:41:31.044Z",
+    "generatedAt": "2026-10-06T17:41:44.128Z",
     "abiVersion": 1,
     "components": [
       {
@@ -19,11 +19,11 @@
       },
       {
         "id": "anthropic",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "abiVersion": 1,
-        "asset": "anthropic-v0.1.1.saip.json",
-        "sha256": "b40e188be0721c81a34f7f755e005facbd6b2192c1b53f969cb27a5fa5c5f8ac",
-        "size": 118423
+        "asset": "anthropic-v0.1.2.saip.json",
+        "sha256": "62f31f3cfcef2c3178ea927148ff487a9866ec394d8692c1d5ba9774550e44ca",
+        "size": 120623
       },
       {
         "id": "xai",
@@ -63,15 +63,15 @@
     "tag_name": "catalog-v1",
     "assets": [
       {
-        "id": 616208214,
+        "id": 616208628,
         "name": "catalog.json",
         "size": 1564,
-        "digest": "sha256:c09f174c002529b254d188941f65b028ceeb97631f29658cef520521e980aea0",
+        "digest": "sha256:30b3f5aaf214bda1805756965a9d80f4d2d797e2e2d30dd280ca992854eab51b",
         "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/catalog-v1/catalog.json"
       }
     ]
   },
-  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE3OjQxOjMxLjA0NFoiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS40IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuNC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjllMDJjYWY1ZGU1M2ExZDI0NTYzMDY0NTQ2Y2E4NjNhY2Y4YTM2NGNhN2QzY2Y0YjdjZTgyZTY1NjUxYmE2NmMiLAogICAgICAic2l6ZSI6IDEyMDYwNwogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImI0MGUxODhiZTA3MjFjODFhMzRmN2Y3NTVlMDA1ZmFjYmQ2YjIxOTJjMWI1M2Y5NjljYjI3YTVmYTVjNWY4YWMiLAogICAgICAic2l6ZSI6IDExODQyMwogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjFlYzZmZDBiN2E3YTlhOGVlY2JmY2ZhZTQ3NzA0ZTJhYTJjZjc4YTYxZThiNzg2M2FmNDMwZWMxMDJhOTIxYmUiLAogICAgICAic2l6ZSI6IDEyMDU4NwogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImY4M2YxMjFmZmUxYjE2Njc5MWNkZmE0OWI5MTVmZDVlNmUxODM3ODc3ZjhmNDA3ZWYyOTc2NTBiZmIwM2MyYzQiLAogICAgICAic2l6ZSI6IDEyMDYwNwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjIiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjIuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICIxNDg0ODkwYjlhNGQ1NzU2NmVjYTNkNWQwZTI1MTA3OWRjNmVhYTliY2FjY2JkN2JhZDYxODE3NDg0OGEyZmM4IiwKICAgICAgInNpemUiOiAxMjA2MjMKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4yLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiYjg3NTdmMDY1Yjc1YjZlNGMxNDU4NzJkNmU3ZTQ2NmM1NDc4MmE0MTI5YWNkYmU0MmUzODI2YjgxYzQ4ZWI0MCIsCiAgICAgICJzaXplIjogMTIwNjIzCiAgICB9CiAgXQp9Cg==",
+  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE3OjQxOjQ0LjEyOFoiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS40IiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuNC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjllMDJjYWY1ZGU1M2ExZDI0NTYzMDY0NTQ2Y2E4NjNhY2Y4YTM2NGNhN2QzY2Y0YjdjZTgyZTY1NjUxYmE2NmMiLAogICAgICAic2l6ZSI6IDEyMDYwNwogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjYyZjMxZjNjZmNlZjJjMzE3OGVhOTI3MTQ4ZmY0ODdhOTg2NmVjMzk0ZDg2OTJjMWQ1YmE5Nzc0NTUwZTQ0Y2EiLAogICAgICAic2l6ZSI6IDEyMDYyMwogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjFlYzZmZDBiN2E3YTlhOGVlY2JmY2ZhZTQ3NzA0ZTJhYTJjZjc4YTYxZThiNzg2M2FmNDMwZWMxMDJhOTIxYmUiLAogICAgICAic2l6ZSI6IDEyMDU4NwogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImY4M2YxMjFmZmUxYjE2Njc5MWNkZmE0OWI5MTVmZDVlNmUxODM3ODc3ZjhmNDA3ZWYyOTc2NTBiZmIwM2MyYzQiLAogICAgICAic2l6ZSI6IDEyMDYwNwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjIiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjIuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICIxNDg0ODkwYjlhNGQ1NzU2NmVjYTNkNWQwZTI1MTA3OWRjNmVhYTliY2FjY2JkN2JhZDYxODE3NDg0OGEyZmM4IiwKICAgICAgInNpemUiOiAxMjA2MjMKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4yLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiYjg3NTdmMDY1Yjc1YjZlNGMxNDU4NzJkNmU3ZTQ2NmM1NDc4MmE0MTI5YWNkYmU0MmUzODI2YjgxYzQ4ZWI0MCIsCiAgICAgICJzaXplIjogMTIwNjIzCiAgICB9CiAgXQp9Cg==",
   "releaseReceipts": [
     {
       "tag_name": "openai-v0.1.4",
@@ -86,14 +86,14 @@
       ]
     },
     {
-      "tag_name": "anthropic-v0.1.1",
+      "tag_name": "anthropic-v0.1.2",
       "assets": [
         {
-          "id": 616003645,
-          "name": "anthropic-v0.1.1.saip.json",
-          "size": 118423,
-          "digest": "sha256:b40e188be0721c81a34f7f755e005facbd6b2192c1b53f969cb27a5fa5c5f8ac",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/anthropic-v0.1.1/anthropic-v0.1.1.saip.json"
+          "id": 616208135,
+          "name": "anthropic-v0.1.2.saip.json",
+          "size": 120623,
+          "digest": "sha256:62f31f3cfcef2c3178ea927148ff487a9866ec394d8692c1d5ba9774550e44ca",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/anthropic-v0.1.2/anthropic-v0.1.2.saip.json"
         }
       ]
     },
