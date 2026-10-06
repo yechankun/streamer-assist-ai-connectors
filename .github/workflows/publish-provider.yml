@@ -1,6 +1,13 @@
 name: Test and publish provider adapter
 
 on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Provider to publish from its manifest version
+        required: true
+        type: choice
+        options: [openai, anthropic, xai, google, deepseek, moonshot]
   push:
     tags:
       - 'openai-v*'
@@ -30,9 +37,14 @@ jobs:
       - name: Build the tagged provider package
         id: build
         shell: bash
+        env:
+          SELECTED_PROVIDER: ${{ inputs.provider }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          if [[ "$tag" =~ ^(openai|anthropic|xai|google|deepseek|moonshot)-v(.+)$ ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            provider="$SELECTED_PROVIDER"
+            version=$(node -e 'console.log(require(`./providers/${process.argv[1]}/manifest.json`).version)' "$provider")
+          elif [[ "$tag" =~ ^(openai|anthropic|xai|google|deepseek|moonshot)-v(.+)$ ]]; then
             provider="${BASH_REMATCH[1]}"
             version="${BASH_REMATCH[2]}"
           else
@@ -84,8 +96,11 @@ jobs:
             let previous = null;
             if (currentAsset) {
               if (typeof currentAsset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(currentAsset.digest)) throw new Error('GitHub catalog asset has no verifiable SHA-256 digest.');
-              const downloaded = await github.rest.repos.downloadReleaseAsset({ owner, repo, asset_id: currentAsset.id, headers: { accept: 'application/octet-stream' } });
-              const bytes = Buffer.isBuffer(downloaded.data) ? downloaded.data : Buffer.from(downloaded.data);
+              const expectedCatalogUrl = `https://github.com/${owner}/${repo}/releases/download/catalog-v1/catalog.json`;
+              if (currentAsset.browser_download_url !== expectedCatalogUrl || currentAsset.size > 512 * 1024) throw new Error('Catalog asset URL or size is invalid.');
+              const response = await fetch(expectedCatalogUrl, { signal: AbortSignal.timeout(30000) });
+              if (!response.ok) throw new Error(`Catalog download failed with HTTP ${response.status}.`);
+              const bytes = Buffer.from(await response.arrayBuffer());
               const catalogHash = crypto.createHash('sha256').update(bytes).digest('hex');
               if (catalogHash !== currentAsset.digest.slice('sha256:'.length) || bytes.length !== currentAsset.size) throw new Error('Existing catalog asset digest or size does not match GitHub metadata.');
               previous = JSON.parse(bytes.toString('utf8'));
