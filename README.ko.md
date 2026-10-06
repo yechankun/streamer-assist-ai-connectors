@@ -23,13 +23,15 @@ Grok npm 레시피는 네이티브 패키지의 별도 `latest` 태그 대신 �
 | Anthropic | `CLAUDE_CONFIG_DIR`, `ANTHROPIC_CONFIG_DIR` | Claude 로그인 파일과 경로별 Keychain 항목을 분리합니다. 두 번째 경로는 Console OAuth와 연합 인증 프로필 파일까지 분리합니다. [Claude 인증](https://code.claude.com/docs/en/authentication), [Anthropic 프로필 경로](https://platform.claude.com/docs/en/manage-claude/wif-reference). |
 | xAI | `GROK_HOME` | Grok의 `auth.json`과 설정·상태를 이 경로에서 관리합니다. [설정](https://docs.x.ai/build/settings), [공식 파일 경로](https://github.com/xai-org/grok-build/blob/main/crates/codegen/xai-grok-pager/docs/user-guide/14-headless-mode.md). |
 | Moonshot | `KIMI_CODE_HOME`, 이전 버전의 `KIMI_SHARE_DIR` | 네이티브 Kimi Code와 이전 Python CLI에 각각 공식 루트를 지정해 OAuth와 실행 데이터를 분리합니다. [네이티브 데이터 경로](https://moonshotai.github.io/kimi-code/en/configuration/data-locations.html), [이전 데이터 경로](https://moonshotai.github.io/kimi-cli/en/configuration/data-locations.html). |
-| Google | `supported: false` | Antigravity는 OS 자격 증명 관리자를 재사용하며 공식 문서에서 독립된 인증 이름공간을 확인하지 못했습니다. 데스크톱은 API 연결을 제공하고 공유 인증을 사용하는 CLI 동작을 차단합니다. [Antigravity 설치·인증](https://www.antigravity.google/docs/cli/install/). |
+| Google | `supported: false` | Antigravity는 OS 자격 증명 관리자를 재사용하며 공식 문서에서 독립된 인증 이름공간을 확인하지 못했습니다. 데스크톱에서 PC 로그인 공유를 명시적으로 켜야 CLI를 사용할 수 있습니다. API 연결은 별도로 유지됩니다. [Antigravity 설치·인증](https://www.antigravity.google/docs/cli/install/). |
 
 호스트는 프로필 메타데이터가 없거나 지원되지 않으면 CLI 동작을 거부합니다. 상대 경로와 고정 환경 변수 이름을 검증하고 비밀 없는 초기 설정만 생성하며, OS의 `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA`는 변경하지 않습니다. API 키는 기존 데스크톱 암호화 저장소를 사용합니다.
 
-어댑터는 로그아웃 방식도 제공합니다. Codex, Claude Code, Grok은 앱 프로필 안에서 문서화된 로그아웃 명령을 새 로그인 전에 실행합니다. Kimi Code는 ACP `initialize` 응답에 `agentCapabilities.auth.logout`이 있을 때만 ACP 로그아웃을 실행하며, 지원하지 않는 구버전에는 해당 요청을 보내지 않습니다. DeepSeek CLI에는 로그아웃 명령이 없으며 앱에 저장한 암호화 API 키를 지웁니다. Antigravity의 터미널 `/logout` 레시피는 향후 공식 격리 기능이 지원될 때 사용할 메타데이터로 남으며, 프로필이 지원되지 않는 동안 실행하지 않습니다.
+어댑터는 로그아웃 방식도 제공합니다. Codex, Claude Code, Grok은 앱 프로필 안에서 문서화된 로그아웃 명령을 새 로그인 전에 실행합니다. Kimi Code는 ACP `initialize` 응답에 `agentCapabilities.auth.logout`이 있을 때만 ACP 로그아웃을 실행하며, 지원하지 않는 구버전에는 해당 요청을 보내지 않습니다. DeepSeek CLI에는 로그아웃 명령이 없으며 앱에 저장한 암호화 API 키를 지웁니다. PC 로그인 공유가 켜진 Antigravity의 터미널 `/logout`은 공유 중인 PC 계정에서 로그아웃하므로, 데스크톱에서 완료를 직접 확인해야 합니다.
 
 설치된 각 어댑터는 공급자가 문서화한 CLI 진입점에 맞춘 고정 `cli.auth` 레시피를 포함합니다. Codex와 Claude Code는 문서화된 로그인·상태 명령을 사용합니다. Grok과 Kimi Code는 공식 브라우저/기기 코드 흐름을 사용하고, Antigravity는 `agy` 터미널에서 로그인을 시작합니다. DeepSeek에는 공식 코딩 CLI 로그인 명령이 없어 API 키 흐름을 사용합니다. 호스트는 고정된 인자만 실행하고, 전달되는 브라우저 URL은 어댑터의 정확한 HTTPS 호스트 허용 목록과 대조합니다.
+
+Antigravity 인증은 `agy -p /usage --output-format json --print-timeout 10s`로 확인합니다. 이 공식 [읽기 전용 print 명령](https://www.antigravity.google/docs/changelog/)은 모델 추론, 할당량 소모, 대화 생성 없이 서버의 사용량 정보를 갱신합니다. 성공 응답 안에서 올바른 할당량 버킷이 확인되어야 연결된 계정으로 판정하며, 종료 코드 0이나 모델 목록만으로는 로그인 성공을 판정하지 않습니다. 모델 조회는 CLI JSON 응답의 `command.data.models`와 반환된 표시 이름을 읽습니다. 알 수 없거나 비어 있거나 실패한 응답은 로그인 성공으로 처리하지 않습니다. [모델 할당량](https://www.antigravity.google/docs/cli/commands/usage), [비대화형 명령과 추론 강도](https://www.antigravity.google/docs/cli/headless/).
 
 상태·진행 파서는 정규화된 로그인 상태, 허용된 인증 URL 또는 일회용 기기 코드만 반환합니다. 원시 명령 출력, 계정 정보, 액세스 토큰, API 키는 반환하지 않습니다. API 키는 데스크톱의 암호화된 입력 흐름에서 저장하며 `keyUrl`은 공급자의 HTTPS 키 관리 콘솔을 가리킵니다. 로그인 명령과 URL 호스트는 공급자별 컴포넌트 버전에 포함됩니다.
 

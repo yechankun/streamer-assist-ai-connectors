@@ -122,11 +122,12 @@ test("login recipes use documented provider commands and return only safe auth s
   const google = adapter("google").cli.auth;
   assert.equal(google.kind, "terminal");
   assert.deepEqual(google.loginArgs, []);
+  assert.deepEqual(google.statusArgs, ["-p", "/usage", "--output-format", "json", "--print-timeout", "10s"]);
   assert.equal(google.requiresTty, true);
-  assert.match(google.instructions, /models/i);
+  assert.match(google.instructions, /read-only usage/i);
   assert.deepEqual([google.logoutKind, google.logoutArgs, google.logoutBeforeLogin], ["terminal", [], false]);
   assert.match(google.logoutInstructions, /\/logout/);
-  assert.equal(google.parseStatus, undefined);
+  assert.equal(typeof google.parseStatus, "function");
 
   const deepseek = adapter("deepseek").cli.auth;
   assert.equal(deepseek.kind, "api-key");
@@ -142,6 +143,33 @@ test("login recipes use documented provider commands and return only safe auth s
     assert.equal(current.keyUrl.includes("@"), false);
     assert.ok(Array.isArray(current.authHosts));
   }
+});
+
+test("Antigravity verifies read-only backend quotas and unwraps the official model envelope", () => {
+  const google = adapter("google");
+  const bucket = { id: "standard", name: "Standard", window: "weekly", remaining_fraction: 0.5, reset_time: "2026-10-08T00:00:00Z" };
+  const usage = { status: "SUCCESS", num_turns: 0, usage: { total_tokens: 0 }, command: { name: "usage", data: { groups: [{ buckets: [bucket] }] } } };
+  const parse = (body, exitCode = 0) => google.cli.auth.parseStatus({ exitCode, stdout: JSON.stringify(body), stderr: "private-account@example.invalid" });
+  assert.deepEqual(parse(usage), { authenticated: true });
+  assert.deepEqual(parse({ ...usage, command: { ...usage.command, data: { ...usage.command.data, private_token: "never-return" } } }), { authenticated: true });
+  assert.equal(parse(usage, 1), null);
+  assert.equal(parse({ ...usage, num_turns: 1 }), null);
+  assert.equal(parse({ ...usage, usage: { total_tokens: 1 } }), null);
+  assert.equal(parse({ ...usage, command: { name: "models", data: usage.command.data } }), null);
+  assert.equal(parse({ ...usage, command: { name: "usage", data: { groups: [] } } }), null);
+  for (const replacement of [{ remaining_fraction: 2 }, { remaining_fraction: "0.5" }, { reset_time: "not-a-date" }, { id: "" }])
+    assert.equal(parse({ ...usage, command: { name: "usage", data: { groups: [{ buckets: [{ ...bucket, ...replacement }] }] } } }), null);
+  assert.equal(parse({ status: "SUCCESS", response: "Logged in", num_turns: 0, usage: { total_tokens: 0 } }), null);
+  assert.deepEqual(parse({ status: "ERROR", error: "UNAUTHENTICATED: authentication required" }, 1), { authenticated: false });
+  assert.equal(parse({ status: "ERROR", error: "network unavailable" }, 1), null);
+  assert.equal(google.cli.auth.parseStatus({ exitCode: 0, stdout: "Logged in" }), null);
+  assert.equal(google.cli.auth.parseStatus({ exitCode: 0, stdout: "x".repeat(256 * 1024 + 1) }), null);
+
+  const envelope = { status: "SUCCESS", num_turns: 0, usage: { total_tokens: 0 }, command: { name: "models", data: { models: [{ id: "gemini-test-high", label: "Gemini Test (High)", access_token: "never-return" }] } } };
+  const rows = google.cli.models.parseOutput({ output: JSON.stringify(envelope) });
+  assert.deepEqual(rows, { models: [{ id: "gemini-test-high", name: "Gemini Test (High)" }] });
+  assert.throws(() => google.cli.models.parseOutput({ output: JSON.stringify({ ...envelope, status: "ERROR" }) }), /invalid_cli_model_list/);
+  assert.throws(() => google.cli.models.parseOutput({ output: JSON.stringify({ ...envelope, command: { ...envelope.command, name: "usage" } }) }), /invalid_cli_model_list/);
 });
 
 test("CLI authentication profiles use official data roots and keep unsupported shared keyrings explicit", () => {
@@ -315,6 +343,8 @@ test("CLI plans are provider-specific, isolated, and use live verified models", 
   assert.equal(kimi.files.some(file => file.relativePath === "empty-skills/.keep"), true);
   assert.equal(adapter("xai").cli.models.parseOutput({ output: "You are using XAI_API_KEY.\n\nDefault model: grok-4.7\n\nAvailable models:\n  * grok-4.7 (default)\n" }).currentModelId, "grok-4.7");
   assert.equal(adapter("google").cli.models.parseOutput({ output: JSON.stringify({ models: [{ id: "gemini-3.8-flash" }] }) }).models[0].id, "gemini-3.8-flash");
+  const agy = adapter("google").cli.analysisPlan({ model: "gemini-3.8-flash", effort: "high", prompt: transcript });
+  assert.deepEqual(agy.args.slice(-2), ["--effort", "high"]);
 });
 
 test("usage and source-stamped pricing validate against the adapter accounting schema", () => {
