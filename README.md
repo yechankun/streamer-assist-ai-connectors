@@ -10,6 +10,8 @@ Adapters implement ABI version 1. They describe provider-specific HTTP request b
 
 Models are discovered from the selected provider API or installed CLI at runtime. The packs do not seed a static model catalog. Provider pricing rows name one exact model ID and carry a source URL and check date; the app treats these as estimates until the provider reports an actual cost. An unknown model price remains unknown.
 
+The Grok npm recipe follows the root package's exact Windows optional dependency, rather than the native package's independent `latest` tag. Current official platform archives contain `grok.exe.br`; the recipe declares `executableCompression: "brotli"` so a compatible desktop can verify the archive and decompress that executable with its existing extraction size limits. Earlier plain executables remain supported. No npm lifecycle script is run. See [Grok installation](https://docs.x.ai/build/overview).
+
 ## Provider sign-in
 
 The adapter also describes sign-out: Codex, Claude Code, and Grok use their documented logout commands before a fresh login. Antigravity requires a user to enter `/logout` in its TUI. Kimi Code uses ACP logout only after `initialize` advertises `agentCapabilities.auth.logout`; the host never sends that method to an older or unsupported agent. DeepSeek has no CLI logout; the app removes its saved encrypted API key. The host never invents a logout command or treats a status precheck as a substitute for an explicit fresh-login flow.

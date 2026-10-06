@@ -307,6 +307,7 @@ test("runtime release recipes are metadata-only and constrain official hosts", a
   assert.equal(release.artifact, "tar.gz");
   assert.equal(release.url.startsWith("https://registry.npmjs.org/"), true);
   assert.equal(calls.length, 2);
+  assert.equal(release.executableCompression, undefined);
   await assert.rejects(codex.resolveRelease({ platform: "linux", arch: "x64" }, {}), /Windows/);
 
   const google = adapter("google").runtime;
@@ -316,6 +317,33 @@ test("runtime release recipes are metadata-only and constrain official hosts", a
   });
   assert.equal(agy.checksum.algorithm, "sha512");
   assert.equal(agy.executable, "agy.exe");
+});
+
+test("Grok runtime uses the root's exact platform dependency and declares vendor Brotli packaging", async () => {
+  const calls = [];
+  const grok = adapter("xai").runtime;
+  const resolved = await grok.resolveRelease({ platform: "win32", arch: "x64" }, {
+    async fetchJson(url) {
+      calls.push(url);
+      if (calls.length === 1) return { version: "1.0.46", optionalDependencies: {
+        "@xai-official/grok-linux-x64": "1.0.46",
+        "@xai-official/grok-win32-x64": "1.0.46",
+        "@xai-official/grok-win32-arm64": "1.0.46",
+      } };
+      return { version: "1.0.46", dist: { integrity: `sha512-${"A".repeat(86)}==`,
+        tarball: "https://registry.npmjs.org/@xai-official/grok-win32-x64/-/grok-win32-x64-1.0.46.tgz" } };
+    },
+    async fetchText() { throw new Error("unexpected metadata request"); },
+  });
+  assert.deepEqual(calls, [
+    "https://registry.npmjs.org/%40xai-official%2Fgrok/latest",
+    "https://registry.npmjs.org/%40xai-official%2Fgrok-win32-x64/1.0.46",
+  ]);
+  assert.equal(resolved.version, "1.0.46");
+  assert.equal(resolved.artifact, "tar.gz");
+  assert.equal(resolved.executableCompression, "brotli");
+  assert.equal(resolved.provenance, "npm:@xai-official/grok-win32-x64@1.0.46");
+  assert.equal(grok.executable, "grok.exe");
 });
 
 test("build output matches payload envelope and catalog digest contract", () => {
