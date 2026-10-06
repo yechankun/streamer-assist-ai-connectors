@@ -50,7 +50,79 @@ test("all six manifests and adapter descriptors match the desktop ABI", () => {
     for (const hook of ["buildRequest", "parseEvent", "buildModelsRequest", "parseModelsResponse", "normalizeUsage"]) assert.equal(typeof current.api[hook], "function");
     assert.equal(typeof current.cli.analysisPlan, "function");
     assert.deepEqual(current.cli.loginArgs, []);
+    assert.ok(current.cli.auth);
+    assert.equal(typeof current.cli.auth.kind, "string");
+    assert.equal(typeof current.cli.auth.instructions, "string");
+    assert.equal(new URL(current.cli.auth.keyUrl).protocol, "https:");
     assert.ok(current.runtime && typeof current.runtime.resolveRelease === "function");
+  }
+});
+
+test("login recipes use documented provider commands and return only safe auth state", () => {
+  const openai = adapter("openai").cli.auth;
+  assert.deepEqual(openai.loginArgs, ["login"]);
+  assert.deepEqual(openai.statusArgs, ["login", "status"]);
+  assert.equal(openai.requiresTty, false);
+  assert.deepEqual(openai.parseStatus({ exitCode: 0, stdout: "Logged in using ChatGPT" }), { authenticated: true });
+  assert.deepEqual(openai.parseStatus({ exitCode: 1, stderr: "No credentials" }), { authenticated: false });
+  assert.equal(openai.parseStatus({ exitCode: 2 }), null);
+  assert.deepEqual(openai.parseProgress({ text: "Open https://auth.openai.com/authorize?client_id=cli&state=private-state&code_challenge=challenge" }), {
+    url: "https://auth.openai.com/authorize?client_id=cli&state=private-state&code_challenge=challenge",
+  });
+  assert.equal(openai.parseProgress({ text: "https://auth.openai.com/authorize?api_key=must-not-pass" }), null);
+
+  const anthropic = adapter("anthropic").cli.auth;
+  assert.deepEqual(anthropic.loginArgs, ["auth", "login"]);
+  assert.deepEqual(anthropic.statusArgs, ["auth", "status"]);
+  assert.equal(anthropic.requiresTty, false);
+  assert.deepEqual(anthropic.parseStatus({ exitCode: 0, stdout: JSON.stringify({ authMethod: "claude.ai", configDirectory: "private/path", token: "never-return" }) }), { authenticated: true });
+  assert.deepEqual(anthropic.parseStatus({ exitCode: 1, stdout: JSON.stringify({ authMethod: "none", token: "never-return" }) }), { authenticated: false });
+  assert.equal(anthropic.parseStatus({ exitCode: 0, stdout: JSON.stringify({ authMethod: "unrecognized", token: "never-return" }) }), null);
+  assert.deepEqual(anthropic.parseProgress({ text: "Sign in at https://claude.ai/oauth/authorize?client_id=cli&response_type=code&state=state" }), {
+    url: "https://claude.ai/oauth/authorize?client_id=cli&response_type=code&state=state",
+  });
+  assert.equal(anthropic.parseProgress({ text: "https://evil.example/oauth/authorize?state=x" }), null);
+
+  const grok = adapter("xai").cli.auth;
+  assert.deepEqual(grok.loginArgs, ["login"]);
+  assert.equal(grok.kind, "browser");
+  assert.equal(grok.requiresTty, false);
+  assert.deepEqual(grok.parseProgress({ text: "Continue: https://auth.x.ai/authorize?client_id=cli&response_type=code&state=safe-state&code_challenge=challenge" }), {
+    url: "https://auth.x.ai/authorize?client_id=cli&response_type=code&state=safe-state&code_challenge=challenge",
+  });
+  assert.equal(grok.parseProgress({ text: "https://auth.x.ai/authorize?access_token=secret" }), null);
+  assert.equal(grok.parseProgress({ text: "https://evil.example/authorize?state=x" }), null);
+  assert.equal(grok.parseProgress({ text: "https://user:pass@auth.x.ai/authorize" }), null);
+  assert.equal(grok.parseProgress({ text: "https://auth.x.ai/authorize#token=secret" }), null);
+
+  const kimi = adapter("moonshot").cli.auth;
+  assert.deepEqual(kimi.loginArgs, ["login"]);
+  assert.equal(kimi.kind, "device");
+  assert.equal(kimi.requiresTty, false);
+  assert.deepEqual(kimi.parseProgress({ text: "Visit https://www.kimi.ai/code and enter user code: abcd-1234" }), {
+    url: "https://www.kimi.ai/code", code: "ABCD-1234",
+  });
+  assert.equal(kimi.parseProgress({ text: "Visit https://evil.example/code and enter user code: AB-1234" }), null);
+  assert.equal(kimi.parseProgress({ text: "access_token: should-not-be-forwarded" }), null);
+
+  const google = adapter("google").cli.auth;
+  assert.equal(google.kind, "terminal");
+  assert.deepEqual(google.loginArgs, []);
+  assert.equal(google.requiresTty, true);
+  assert.match(google.instructions, /models/i);
+  assert.equal(google.parseStatus, undefined);
+
+  const deepseek = adapter("deepseek").cli.auth;
+  assert.equal(deepseek.kind, "api-key");
+  assert.deepEqual(deepseek.loginArgs, []);
+  assert.match(deepseek.instructions, /no official CLI/i);
+  assert.equal(deepseek.parseStatus, undefined);
+
+  for (const id of IDS) {
+    const current = adapter(id).cli.auth;
+    assert.ok(current.keyUrl.startsWith("https://"));
+    assert.equal(current.keyUrl.includes("@"), false);
+    assert.ok(Array.isArray(current.authHosts));
   }
 });
 
@@ -249,6 +321,7 @@ test("build output matches payload envelope and catalog digest contract", () => 
       }
       const loaded = require(path.join(extracted, payload.entry));
       assert.equal(loaded.provider.id, id);
+      assert.equal(typeof loaded.cli.auth.kind, "string", "installed packs include their login recipe module");
     } finally {
       fs.rmSync(extracted, { recursive: true, force: true });
     }
