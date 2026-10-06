@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "repository": "yechankun/streamer-assist-ai-connectors",
   "abiVersion": 1,
-  "generatedAt": "2026-10-06T16:20:55.161Z",
+  "generatedAt": "2026-10-06T16:34:54.497Z",
   "catalog": {
     "schemaVersion": 1,
     "repository": "yechankun/streamer-assist-ai-connectors",
-    "generatedAt": "2026-10-06T16:20:54.147Z",
+    "generatedAt": "2026-10-06T16:34:53.367Z",
     "abiVersion": 1,
     "components": [
       {
         "id": "openai",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "abiVersion": 1,
-        "asset": "openai-v0.1.2.saip.json",
-        "sha256": "782bc747613d7ccf66dda1cf4984d7e21ba25b2f0b1fc9827b15980559ec56d9",
-        "size": 118403
+        "asset": "openai-v0.1.3.saip.json",
+        "sha256": "8623368326dffde42df8367f1de5265012f177a5584f56ee194a570429f20ab3",
+        "size": 118239
       },
       {
         "id": "anthropic",
@@ -63,25 +63,25 @@
     "tag_name": "catalog-v1",
     "assets": [
       {
-        "id": 616023842,
+        "id": 616056189,
         "name": "catalog.json",
         "size": 1564,
-        "digest": "sha256:5e6da62fe4361330d38359b2de1789536b2877b844a31fd5bd165469c8662266",
+        "digest": "sha256:b3e430b63e26282a28fd8db8137a435943bdd7334550e1202e08b5729b9ceaf7",
         "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/catalog-v1/catalog.json"
       }
     ]
   },
-  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE2OjIwOjU0LjE0N1oiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjc4MmJjNzQ3NjEzZDdjY2Y2NmRkYTFjZjQ5ODRkN2UyMWJhMjViMmYwYjFmYzk4MjdiMTU5ODA1NTllYzU2ZDkiLAogICAgICAic2l6ZSI6IDExODQwMwogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImI0MGUxODhiZTA3MjFjODFhMzRmN2Y3NTVlMDA1ZmFjYmQ2YjIxOTJjMWI1M2Y5NjljYjI3YTVmYTVjNWY4YWMiLAogICAgICAic2l6ZSI6IDExODQyMwogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImM5ZDlmZmI5Y2VlMjc1NTBiNmEwZTg5NjRlNTAzZmE3NjQ5ZmQ1ODM4MDU3ODliZjM5YTBiOTNjODg1MzI4MmYiLAogICAgICAic2l6ZSI6IDExODM4MwogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImRhYTA2N2I3YWY5Yjc3NjAzZjQ5ZmM2YzA5Nzk1MmQ4NjdhODNjY2ZjOTUyMjg0NzNjN2UyYmRiMzgwNjNkZGYiLAogICAgICAic2l6ZSI6IDExODQwMwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjEiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjEuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICJmMGY0ZTVmMzg4ODliNzUzOTJmNGQ5NzYzZWFjZGI3OTYwYjhiY2I2MTNhZWM2MmQ4YmRkMTUyZGFlMDczNWU0IiwKICAgICAgInNpemUiOiAxMTg0MTkKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4xLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiZmQ5MjY3YzEyMzU5YTZhYTllNjJiNGM0YWNlNDIwYzlhN2ZiY2U5YzVlNGRhZGU3NGY5NjNmYzZiNmJiZGI2YiIsCiAgICAgICJzaXplIjogMTE4NDE5CiAgICB9CiAgXQp9Cg==",
+  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE2OjM0OjUzLjM2N1oiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4zIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuMy5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjg2MjMzNjgzMjZkZmZkZTQyZGY4MzY3ZjFkZTUyNjUwMTJmMTc3YTU1ODRmNTZlZTE5NGE1NzA0MjlmMjBhYjMiLAogICAgICAic2l6ZSI6IDExODIzOQogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImI0MGUxODhiZTA3MjFjODFhMzRmN2Y3NTVlMDA1ZmFjYmQ2YjIxOTJjMWI1M2Y5NjljYjI3YTVmYTVjNWY4YWMiLAogICAgICAic2l6ZSI6IDExODQyMwogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImM5ZDlmZmI5Y2VlMjc1NTBiNmEwZTg5NjRlNTAzZmE3NjQ5ZmQ1ODM4MDU3ODliZjM5YTBiOTNjODg1MzI4MmYiLAogICAgICAic2l6ZSI6IDExODM4MwogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImRhYTA2N2I3YWY5Yjc3NjAzZjQ5ZmM2YzA5Nzk1MmQ4NjdhODNjY2ZjOTUyMjg0NzNjN2UyYmRiMzgwNjNkZGYiLAogICAgICAic2l6ZSI6IDExODQwMwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjEiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjEuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICJmMGY0ZTVmMzg4ODliNzUzOTJmNGQ5NzYzZWFjZGI3OTYwYjhiY2I2MTNhZWM2MmQ4YmRkMTUyZGFlMDczNWU0IiwKICAgICAgInNpemUiOiAxMTg0MTkKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4xLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiZmQ5MjY3YzEyMzU5YTZhYTllNjJiNGM0YWNlNDIwYzlhN2ZiY2U5YzVlNGRhZGU3NGY5NjNmYzZiNmJiZGI2YiIsCiAgICAgICJzaXplIjogMTE4NDE5CiAgICB9CiAgXQp9Cg==",
   "releaseReceipts": [
     {
-      "tag_name": "openai-v0.1.2",
+      "tag_name": "openai-v0.1.3",
       "assets": [
         {
-          "id": 616003627,
-          "name": "openai-v0.1.2.saip.json",
-          "size": 118403,
-          "digest": "sha256:782bc747613d7ccf66dda1cf4984d7e21ba25b2f0b1fc9827b15980559ec56d9",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/openai-v0.1.2/openai-v0.1.2.saip.json"
+          "id": 616055494,
+          "name": "openai-v0.1.3.saip.json",
+          "size": 118239,
+          "digest": "sha256:8623368326dffde42df8367f1de5265012f177a5584f56ee194a570429f20ab3",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/openai-v0.1.3/openai-v0.1.3.saip.json"
         }
       ]
     },
