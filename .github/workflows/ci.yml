@@ -1,0 +1,24 @@
+name: Validate provider adapters
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test provider adapters and package integrity
+        run: npm test
+      - name: Build all provider packages
+        run: npm run build

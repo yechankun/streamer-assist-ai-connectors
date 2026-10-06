@@ -1,0 +1,107 @@
+name: Test and publish provider adapter
+
+on:
+  push:
+    tags:
+      - 'openai-v*'
+      - 'anthropic-v*'
+      - 'xai-v*'
+      - 'google-v*'
+      - 'deepseek-v*'
+      - 'moonshot-v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-connector-catalog
+  cancel-in-progress: false
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test adapter source
+        run: npm test
+      - name: Build the tagged provider package
+        id: build
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [[ "$tag" =~ ^(openai|anthropic|xai|google|deepseek|moonshot)-v(.+)$ ]]; then
+            provider="${BASH_REMATCH[1]}"
+            version="${BASH_REMATCH[2]}"
+          else
+            echo "Unsupported provider tag" >&2
+            exit 1
+          fi
+          node scripts/build-pack.cjs "$provider" --out dist
+          node -e 'const fs=require("node:fs"),m=JSON.parse(fs.readFileSync(`dist/${process.argv[1]}.metadata.json`)); if(m.version!==process.argv[2]) process.exit(1)' "$provider" "$version"
+          echo "provider=$provider" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Publish provider asset and update digest-verified catalog
+        uses: actions/github-script@v7
+        env:
+          PROVIDER_ID: ${{ steps.build.outputs.provider }}
+          PROVIDER_VERSION: ${{ steps.build.outputs.version }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const crypto = require('node:crypto');
+            const { makeCatalog } = require('./scripts/build-catalog.cjs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const id = process.env.PROVIDER_ID;
+            const version = process.env.PROVIDER_VERSION;
+            const meta = JSON.parse(fs.readFileSync(`dist/${id}.metadata.json`, 'utf8'));
+            const tag = `${id}-v${version}`;
+            const expectedName = `${tag}.saip.json`;
+            if (meta.id !== id || meta.version !== version || meta.asset !== expectedName) throw new Error('Built package identity does not match the release tag.');
+            const packageBytes = fs.readFileSync(`dist/${meta.asset}`);
+            const actualHash = crypto.createHash('sha256').update(packageBytes).digest('hex');
+            if (actualHash !== meta.sha256 || packageBytes.length !== meta.size) throw new Error('Built package digest metadata does not match its bytes.');
+
+            async function releaseForTag(releaseTag, title) {
+              try { return (await github.rest.repos.getReleaseByTag({ owner, repo, tag: releaseTag })).data; }
+              catch (error) {
+                if (error.status !== 404) throw error;
+                return (await github.rest.repos.createRelease({ owner, repo, tag_name: releaseTag, target_commitish: 'main', name: title, draft: false, prerelease: false })).data;
+              }
+            }
+            const providerRelease = await releaseForTag(tag, `${id} adapter ${version}`);
+            let packAsset = providerRelease.assets.find(asset => asset.name === expectedName);
+            if (!packAsset) {
+              packAsset = (await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: providerRelease.id, name: expectedName, data: packageBytes, headers: { 'content-type': 'application/json', 'content-length': packageBytes.length } })).data;
+            }
+            if (packAsset.digest !== `sha256:${actualHash}` || packAsset.size !== packageBytes.length) throw new Error('GitHub did not report the exact SHA-256 digest and size for the package asset.');
+
+            let catalogRelease = await releaseForTag('catalog-v1', 'Provider adapter catalog v1');
+            let currentAsset = catalogRelease.assets.find(asset => asset.name === 'catalog.json');
+            let previous = null;
+            if (currentAsset) {
+              if (typeof currentAsset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(currentAsset.digest)) throw new Error('GitHub catalog asset has no verifiable SHA-256 digest.');
+              const downloaded = await github.rest.repos.downloadReleaseAsset({ owner, repo, asset_id: currentAsset.id, headers: { accept: 'application/octet-stream' } });
+              const bytes = Buffer.isBuffer(downloaded.data) ? downloaded.data : Buffer.from(downloaded.data);
+              const catalogHash = crypto.createHash('sha256').update(bytes).digest('hex');
+              if (catalogHash !== currentAsset.digest.slice('sha256:'.length) || bytes.length !== currentAsset.size) throw new Error('Existing catalog asset digest or size does not match GitHub metadata.');
+              previous = JSON.parse(bytes.toString('utf8'));
+              if (previous.schemaVersion !== 1 || previous.repository !== `${owner}/${repo}` || previous.abiVersion !== 1 || !Array.isArray(previous.components)) throw new Error('Existing catalog uses an unsupported schema.');
+            }
+            const next = makeCatalog(previous, meta, new Date().toISOString());
+            if (previous) {
+              for (const row of previous.components) {
+                const existingRelease = (await github.rest.repos.getReleaseByTag({ owner, repo, tag: `${row.id}-v${row.version}` })).data;
+                const asset = existingRelease.assets.find(item => item.name === row.asset);
+                if (!asset || asset.digest !== `sha256:${row.sha256}` || asset.size !== row.size) throw new Error(`Existing catalog entry ${row.id} is not backed by a matching GitHub release asset digest.`);
+              }
+            }
+            const catalogBytes = Buffer.from(`${JSON.stringify(next, null, 2)}\n`, 'utf8');
+            const catalogHash = crypto.createHash('sha256').update(catalogBytes).digest('hex');
+            if (currentAsset) await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: currentAsset.id });
+            const uploaded = (await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: catalogRelease.id, name: 'catalog.json', data: catalogBytes, headers: { 'content-type': 'application/json', 'content-length': catalogBytes.length } })).data;
+            if (uploaded.size !== catalogBytes.length || uploaded.digest !== `sha256:${catalogHash}`) throw new Error('GitHub catalog asset digest or size does not match the uploaded bytes.');
+            core.info(`Published ${expectedName} and updated catalog-v1 with ${next.components.length} verified component entries.`);

@@ -1,0 +1,7 @@
+{
+  "id": "xai",
+  "name": "xAI",
+  "version": "0.1.0",
+  "abiVersion": 1,
+  "entry": "adapter.cjs"
+}

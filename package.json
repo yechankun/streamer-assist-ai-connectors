@@ -1,0 +1,14 @@
+{
+  "name": "streamer-assist-ai-connectors",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Independently versioned AI provider adapters for Streamer Assist",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "build": "node scripts/build-all.cjs",
+    "build:provider": "node scripts/build-pack.cjs",
+    "build:catalog": "node scripts/build-catalog.cjs"
+  }
+}
