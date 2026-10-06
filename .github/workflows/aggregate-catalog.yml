@@ -35,10 +35,13 @@ jobs:
         run: npm test
       - name: Rebuild catalog from verified GitHub releases
         uses: actions/github-script@v7
+        env:
+          GH_CATALOG_TOKEN: ${{ github.token }}
         with:
           script: |
             const { MAX_CATALOG_BYTES, MAX_PACKAGE_BYTES, parseReleaseTag, selectNewestReleases, validateReleaseAsset, validateCatalogAsset, selectCatalogRows } = require('./scripts/aggregate-catalog.cjs');
             const { DISTRIBUTION_BRANCH, DISTRIBUTION_PATH, buildDistributionIndex } = require('./scripts/distribution-index.cjs');
+            const { downloadReleaseAsset } = require('./scripts/download-release-asset.cjs');
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const repository = `${owner}/${repo}`;
@@ -142,7 +145,7 @@ jobs:
                   typeof currentCatalogAsset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(currentCatalogAsset.digest)) {
                 throw new Error('Existing catalog release asset metadata is invalid.');
               }
-              const catalogBytes = await readBounded(catalogUrl, MAX_CATALOG_BYTES);
+              const catalogBytes = await downloadReleaseAsset({ owner, repo, assetId: currentCatalogAsset.id, maxBytes: MAX_CATALOG_BYTES, token: process.env.GH_CATALOG_TOKEN });
               previous = validateCatalogAsset({ release: catalogRelease, asset: currentCatalogAsset, bytes: catalogBytes, owner, repo });
               for (const row of previous.components) {
                 const tag = `${row.id}-v${row.version}`;
