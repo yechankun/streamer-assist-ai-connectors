@@ -69,7 +69,12 @@ test("login recipes use documented provider commands and return only safe auth s
   assert.deepEqual(openai.parseProgress({ text: "Open https://auth.openai.com/authorize?client_id=cli&state=private-state&code_challenge=challenge" }), {
     url: "https://auth.openai.com/authorize?client_id=cli&state=private-state&code_challenge=challenge",
   });
+  const codexState = "0123456789abcdef".repeat(4);
+  const codexChallenge = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef1234567890-xy";
+  const codexAuthUrl = `https://auth.openai.com/oauth/authorize?response_type=code&client_id=codex-cli&redirect_uri=http%3A%2F%2Flocalhost%3A1455%2Fauth%2Fcallback&scope=openid%20profile%20email&state=${codexState}&code_challenge=${codexChallenge}&code_challenge_method=S256&id_token_add_organizations=true&codex_cli_simplified_flow=true&originator=codex_cli_rs&allowed_workspace_id=workspace-123`;
+  assert.deepEqual(openai.parseProgress({ text: `Authenticate here: ${codexAuthUrl}` }), { url: codexAuthUrl });
   assert.equal(openai.parseProgress({ text: "https://auth.openai.com/authorize?api_key=must-not-pass" }), null);
+  assert.equal(openai.parseProgress({ text: "https://auth.openai.com/authorize?access_token=must-not-pass" }), null);
 
   const anthropic = adapter("anthropic").cli.auth;
   assert.deepEqual(anthropic.loginArgs, ["auth", "login"]);
