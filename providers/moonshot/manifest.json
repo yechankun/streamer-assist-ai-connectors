@@ -1,7 +1,7 @@
 {
   "id": "moonshot",
   "name": "Moonshot",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "abiVersion": 1,
   "entry": "adapter.cjs"
 }

@@ -62,6 +62,8 @@ test("login recipes use documented provider commands and return only safe auth s
   const openai = adapter("openai").cli.auth;
   assert.deepEqual(openai.loginArgs, ["login"]);
   assert.deepEqual(openai.statusArgs, ["login", "status"]);
+  assert.deepEqual([openai.logoutKind, openai.logoutArgs, openai.logoutBeforeLogin], ["command", ["logout"], true]);
+  assert.match(openai.logoutInstructions, /credentials/i);
   assert.equal(openai.requiresTty, false);
   assert.deepEqual(openai.parseStatus({ exitCode: 0, stdout: "Logged in using ChatGPT" }), { authenticated: true });
   assert.deepEqual(openai.parseStatus({ exitCode: 1, stderr: "No credentials" }), { authenticated: false });
@@ -79,6 +81,8 @@ test("login recipes use documented provider commands and return only safe auth s
   const anthropic = adapter("anthropic").cli.auth;
   assert.deepEqual(anthropic.loginArgs, ["auth", "login"]);
   assert.deepEqual(anthropic.statusArgs, ["auth", "status"]);
+  assert.deepEqual([anthropic.logoutKind, anthropic.logoutArgs, anthropic.logoutBeforeLogin], ["command", ["auth", "logout"], true]);
+  assert.match(anthropic.logoutInstructions, /signs out/i);
   assert.equal(anthropic.requiresTty, false);
   assert.deepEqual(anthropic.parseStatus({ exitCode: 0, stdout: JSON.stringify({ authMethod: "claude.ai", configDirectory: "private/path", token: "never-return" }) }), { authenticated: true });
   assert.deepEqual(anthropic.parseStatus({ exitCode: 1, stdout: JSON.stringify({ authMethod: "none", token: "never-return" }) }), { authenticated: false });
@@ -91,6 +95,8 @@ test("login recipes use documented provider commands and return only safe auth s
   const grok = adapter("xai").cli.auth;
   assert.deepEqual(grok.loginArgs, ["login"]);
   assert.equal(grok.kind, "browser");
+  assert.deepEqual([grok.logoutKind, grok.logoutArgs, grok.logoutBeforeLogin], ["command", ["logout"], true]);
+  assert.match(grok.logoutInstructions, /cached credentials/i);
   assert.equal(grok.requiresTty, false);
   assert.deepEqual(grok.parseProgress({ text: "Continue: https://auth.x.ai/authorize?client_id=cli&response_type=code&state=safe-state&code_challenge=challenge" }), {
     url: "https://auth.x.ai/authorize?client_id=cli&response_type=code&state=safe-state&code_challenge=challenge",
@@ -104,6 +110,9 @@ test("login recipes use documented provider commands and return only safe auth s
   assert.deepEqual(kimi.loginArgs, ["login"]);
   assert.equal(kimi.kind, "device");
   assert.equal(kimi.requiresTty, false);
+  assert.deepEqual([kimi.logoutKind, kimi.logoutArgs, kimi.logoutBeforeLogin], ["acp", ["acp"], true]);
+  assert.match(kimi.logoutInstructions, /ACP v1 initialize/i);
+  assert.match(kimi.logoutInstructions, /agentCapabilities\.auth\.logout/);
   assert.deepEqual(kimi.parseProgress({ text: "Visit https://www.kimi.ai/code and enter user code: abcd-1234" }), {
     url: "https://www.kimi.ai/code", code: "ABCD-1234",
   });
@@ -115,11 +124,15 @@ test("login recipes use documented provider commands and return only safe auth s
   assert.deepEqual(google.loginArgs, []);
   assert.equal(google.requiresTty, true);
   assert.match(google.instructions, /models/i);
+  assert.deepEqual([google.logoutKind, google.logoutArgs, google.logoutBeforeLogin], ["terminal", [], false]);
+  assert.match(google.logoutInstructions, /\/logout/);
   assert.equal(google.parseStatus, undefined);
 
   const deepseek = adapter("deepseek").cli.auth;
   assert.equal(deepseek.kind, "api-key");
   assert.deepEqual(deepseek.loginArgs, []);
+  assert.deepEqual([deepseek.logoutKind, deepseek.logoutArgs, deepseek.logoutBeforeLogin], ["api-key", [], false]);
+  assert.match(deepseek.logoutInstructions, /saved DeepSeek API key/i);
   assert.match(deepseek.instructions, /no official CLI/i);
   assert.equal(deepseek.parseStatus, undefined);
 
