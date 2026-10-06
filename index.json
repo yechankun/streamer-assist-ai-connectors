@@ -2,60 +2,60 @@
   "schemaVersion": 1,
   "repository": "yechankun/streamer-assist-ai-connectors",
   "abiVersion": 1,
-  "generatedAt": "2026-10-06T15:37:54.805Z",
+  "generatedAt": "2026-10-06T16:12:21.543Z",
   "catalog": {
     "schemaVersion": 1,
     "repository": "yechankun/streamer-assist-ai-connectors",
-    "generatedAt": "2026-10-06T15:37:53.837Z",
+    "generatedAt": "2026-10-06T16:12:20.597Z",
     "abiVersion": 1,
     "components": [
       {
         "id": "openai",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "abiVersion": 1,
-        "asset": "openai-v0.1.1.saip.json",
-        "sha256": "5f37578020a97a29746b47a6e9d34bb4d5952763b571fe5bc964130e54f14bfa",
-        "size": 108475
+        "asset": "openai-v0.1.2.saip.json",
+        "sha256": "782bc747613d7ccf66dda1cf4984d7e21ba25b2f0b1fc9827b15980559ec56d9",
+        "size": 118403
       },
       {
         "id": "anthropic",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "abiVersion": 1,
-        "asset": "anthropic-v0.1.0.saip.json",
-        "sha256": "7e064851ea1e3e31808563db291e2ee6c7645f38bf0fa77b65bf2f148f14b7db",
-        "size": 108495
+        "asset": "anthropic-v0.1.1.saip.json",
+        "sha256": "b40e188be0721c81a34f7f755e005facbd6b2192c1b53f969cb27a5fa5c5f8ac",
+        "size": 118423
       },
       {
         "id": "xai",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "abiVersion": 1,
-        "asset": "xai-v0.1.0.saip.json",
-        "sha256": "595ac787aac721e409334601b581ab92d5ac9fe517880d5719ce6e4a7431bac3",
-        "size": 108455
+        "asset": "xai-v0.1.1.saip.json",
+        "sha256": "c9d9ffb9cee27550b6a0e8964e503fa7649fd583805789bf39a0b93c8853282f",
+        "size": 118383
       },
       {
         "id": "google",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "abiVersion": 1,
-        "asset": "google-v0.1.0.saip.json",
-        "sha256": "1f461bef9b9c975f857e3b6ce6839396def4c508e7a2b8114bc424118dd03a06",
-        "size": 108475
+        "asset": "google-v0.1.1.saip.json",
+        "sha256": "daa067b7af9b77603f49fc6c097952d867a83ccfc95228473c7e2bdb38063ddf",
+        "size": 118403
       },
       {
         "id": "deepseek",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "abiVersion": 1,
-        "asset": "deepseek-v0.1.0.saip.json",
-        "sha256": "415c40ee9c3ba9910916e67a700e17d2cfa736d07579c4c891145b8f9ffc0a74",
-        "size": 108491
+        "asset": "deepseek-v0.1.1.saip.json",
+        "sha256": "f0f4e5f38889b75392f4d9763eacdb7960b8bcb613aec62d8bdd152dae0735e4",
+        "size": 118419
       },
       {
         "id": "moonshot",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "abiVersion": 1,
-        "asset": "moonshot-v0.1.0.saip.json",
-        "sha256": "0293984ba7647d08d5340c603b7a46f4eb476f9954b378e72c0138ebd21da7df",
-        "size": 108491
+        "asset": "moonshot-v0.1.1.saip.json",
+        "sha256": "fd9267c12359a6aa9e62b4c4ace420c9a7fbce9c5e4dade74f963fc6b6bbdb6b",
+        "size": 118419
       }
     ]
   },
@@ -63,85 +63,85 @@
     "tag_name": "catalog-v1",
     "assets": [
       {
-        "id": 615922825,
+        "id": 616004076,
         "name": "catalog.json",
         "size": 1564,
-        "digest": "sha256:19c17069926283fc8347975149cd840b7ec21afc23919332ccaafc3c62ec6d0a",
+        "digest": "sha256:26c277c845519990d1912be2efaa2eb4d7b72001dbf70072fe88e61d08779149",
         "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/catalog-v1/catalog.json"
       }
     ]
   },
-  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE1OjM3OjUzLjgzN1oiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjVmMzc1NzgwMjBhOTdhMjk3NDZiNDdhNmU5ZDM0YmI0ZDU5NTI3NjNiNTcxZmU1YmM5NjQxMzBlNTRmMTRiZmEiLAogICAgICAic2l6ZSI6IDEwODQ3NQogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjdlMDY0ODUxZWExZTNlMzE4MDg1NjNkYjI5MWUyZWU2Yzc2NDVmMzhiZjBmYTc3YjY1YmYyZjE0OGYxNGI3ZGIiLAogICAgICAic2l6ZSI6IDEwODQ5NQogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjU5NWFjNzg3YWFjNzIxZTQwOTMzNDYwMWI1ODFhYjkyZDVhYzlmZTUxNzg4MGQ1NzE5Y2U2ZTRhNzQzMWJhYzMiLAogICAgICAic2l6ZSI6IDEwODQ1NQogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMC5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjFmNDYxYmVmOWI5Yzk3NWY4NTdlM2I2Y2U2ODM5Mzk2ZGVmNGM1MDhlN2EyYjgxMTRiYzQyNDExOGRkMDNhMDYiLAogICAgICAic2l6ZSI6IDEwODQ3NQogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjAiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjAuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICI0MTVjNDBlZTljM2JhOTkxMDkxNmU2N2E3MDBlMTdkMmNmYTczNmQwNzU3OWM0Yzg5MTE0NWI4ZjlmZmMwYTc0IiwKICAgICAgInNpemUiOiAxMDg0OTEKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4wLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiMDI5Mzk4NGJhNzY0N2QwOGQ1MzQwYzYwM2I3YTQ2ZjRlYjQ3NmY5OTU0YjM3OGU3MmMwMTM4ZWJkMjFkYTdkZiIsCiAgICAgICJzaXplIjogMTA4NDkxCiAgICB9CiAgXQp9Cg==",
+  "catalogBytes": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicmVwb3NpdG9yeSI6ICJ5ZWNoYW5rdW4vc3RyZWFtZXItYXNzaXN0LWFpLWNvbm5lY3RvcnMiLAogICJnZW5lcmF0ZWRBdCI6ICIyMDI2LTEwLTA2VDE2OjEyOjIwLjU5N1oiLAogICJhYmlWZXJzaW9uIjogMSwKICAiY29tcG9uZW50cyI6IFsKICAgIHsKICAgICAgImlkIjogIm9wZW5haSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4yIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAib3BlbmFpLXYwLjEuMi5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogIjc4MmJjNzQ3NjEzZDdjY2Y2NmRkYTFjZjQ5ODRkN2UyMWJhMjViMmYwYjFmYzk4MjdiMTU5ODA1NTllYzU2ZDkiLAogICAgICAic2l6ZSI6IDExODQwMwogICAgfSwKICAgIHsKICAgICAgImlkIjogImFudGhyb3BpYyIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiYW50aHJvcGljLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImI0MGUxODhiZTA3MjFjODFhMzRmN2Y3NTVlMDA1ZmFjYmQ2YjIxOTJjMWI1M2Y5NjljYjI3YTVmYTVjNWY4YWMiLAogICAgICAic2l6ZSI6IDExODQyMwogICAgfSwKICAgIHsKICAgICAgImlkIjogInhhaSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAieGFpLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImM5ZDlmZmI5Y2VlMjc1NTBiNmEwZTg5NjRlNTAzZmE3NjQ5ZmQ1ODM4MDU3ODliZjM5YTBiOTNjODg1MzI4MmYiLAogICAgICAic2l6ZSI6IDExODM4MwogICAgfSwKICAgIHsKICAgICAgImlkIjogImdvb2dsZSIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAiZ29vZ2xlLXYwLjEuMS5zYWlwLmpzb24iLAogICAgICAic2hhMjU2IjogImRhYTA2N2I3YWY5Yjc3NjAzZjQ5ZmM2YzA5Nzk1MmQ4NjdhODNjY2ZjOTUyMjg0NzNjN2UyYmRiMzgwNjNkZGYiLAogICAgICAic2l6ZSI6IDExODQwMwogICAgfSwKICAgIHsKICAgICAgImlkIjogImRlZXBzZWVrIiwKICAgICAgInZlcnNpb24iOiAiMC4xLjEiLAogICAgICAiYWJpVmVyc2lvbiI6IDEsCiAgICAgICJhc3NldCI6ICJkZWVwc2Vlay12MC4xLjEuc2FpcC5qc29uIiwKICAgICAgInNoYTI1NiI6ICJmMGY0ZTVmMzg4ODliNzUzOTJmNGQ5NzYzZWFjZGI3OTYwYjhiY2I2MTNhZWM2MmQ4YmRkMTUyZGFlMDczNWU0IiwKICAgICAgInNpemUiOiAxMTg0MTkKICAgIH0sCiAgICB7CiAgICAgICJpZCI6ICJtb29uc2hvdCIsCiAgICAgICJ2ZXJzaW9uIjogIjAuMS4xIiwKICAgICAgImFiaVZlcnNpb24iOiAxLAogICAgICAiYXNzZXQiOiAibW9vbnNob3QtdjAuMS4xLnNhaXAuanNvbiIsCiAgICAgICJzaGEyNTYiOiAiZmQ5MjY3YzEyMzU5YTZhYTllNjJiNGM0YWNlNDIwYzlhN2ZiY2U5YzVlNGRhZGU3NGY5NjNmYzZiNmJiZGI2YiIsCiAgICAgICJzaXplIjogMTE4NDE5CiAgICB9CiAgXQp9Cg==",
   "releaseReceipts": [
     {
-      "tag_name": "openai-v0.1.1",
+      "tag_name": "openai-v0.1.2",
       "assets": [
         {
-          "id": 615602301,
-          "name": "openai-v0.1.1.saip.json",
-          "size": 108475,
-          "digest": "sha256:5f37578020a97a29746b47a6e9d34bb4d5952763b571fe5bc964130e54f14bfa",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/openai-v0.1.1/openai-v0.1.1.saip.json"
+          "id": 616003627,
+          "name": "openai-v0.1.2.saip.json",
+          "size": 118403,
+          "digest": "sha256:782bc747613d7ccf66dda1cf4984d7e21ba25b2f0b1fc9827b15980559ec56d9",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/openai-v0.1.2/openai-v0.1.2.saip.json"
         }
       ]
     },
     {
-      "tag_name": "anthropic-v0.1.0",
+      "tag_name": "anthropic-v0.1.1",
       "assets": [
         {
-          "id": 615605131,
-          "name": "anthropic-v0.1.0.saip.json",
-          "size": 108495,
-          "digest": "sha256:7e064851ea1e3e31808563db291e2ee6c7645f38bf0fa77b65bf2f148f14b7db",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/anthropic-v0.1.0/anthropic-v0.1.0.saip.json"
+          "id": 616003645,
+          "name": "anthropic-v0.1.1.saip.json",
+          "size": 118423,
+          "digest": "sha256:b40e188be0721c81a34f7f755e005facbd6b2192c1b53f969cb27a5fa5c5f8ac",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/anthropic-v0.1.1/anthropic-v0.1.1.saip.json"
         }
       ]
     },
     {
-      "tag_name": "xai-v0.1.0",
+      "tag_name": "xai-v0.1.1",
       "assets": [
         {
-          "id": 615613928,
-          "name": "xai-v0.1.0.saip.json",
-          "size": 108455,
-          "digest": "sha256:595ac787aac721e409334601b581ab92d5ac9fe517880d5719ce6e4a7431bac3",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/xai-v0.1.0/xai-v0.1.0.saip.json"
+          "id": 616003819,
+          "name": "xai-v0.1.1.saip.json",
+          "size": 118383,
+          "digest": "sha256:c9d9ffb9cee27550b6a0e8964e503fa7649fd583805789bf39a0b93c8853282f",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/xai-v0.1.1/xai-v0.1.1.saip.json"
         }
       ]
     },
     {
-      "tag_name": "google-v0.1.0",
+      "tag_name": "google-v0.1.1",
       "assets": [
         {
-          "id": 615615415,
-          "name": "google-v0.1.0.saip.json",
-          "size": 108475,
-          "digest": "sha256:1f461bef9b9c975f857e3b6ce6839396def4c508e7a2b8114bc424118dd03a06",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/google-v0.1.0/google-v0.1.0.saip.json"
+          "id": 616003796,
+          "name": "google-v0.1.1.saip.json",
+          "size": 118403,
+          "digest": "sha256:daa067b7af9b77603f49fc6c097952d867a83ccfc95228473c7e2bdb38063ddf",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/google-v0.1.1/google-v0.1.1.saip.json"
         }
       ]
     },
     {
-      "tag_name": "deepseek-v0.1.0",
+      "tag_name": "deepseek-v0.1.1",
       "assets": [
         {
-          "id": 615617832,
-          "name": "deepseek-v0.1.0.saip.json",
-          "size": 108491,
-          "digest": "sha256:415c40ee9c3ba9910916e67a700e17d2cfa736d07579c4c891145b8f9ffc0a74",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/deepseek-v0.1.0/deepseek-v0.1.0.saip.json"
+          "id": 616003888,
+          "name": "deepseek-v0.1.1.saip.json",
+          "size": 118419,
+          "digest": "sha256:f0f4e5f38889b75392f4d9763eacdb7960b8bcb613aec62d8bdd152dae0735e4",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/deepseek-v0.1.1/deepseek-v0.1.1.saip.json"
         }
       ]
     },
     {
-      "tag_name": "moonshot-v0.1.0",
+      "tag_name": "moonshot-v0.1.1",
       "assets": [
         {
-          "id": 615620212,
-          "name": "moonshot-v0.1.0.saip.json",
-          "size": 108491,
-          "digest": "sha256:0293984ba7647d08d5340c603b7a46f4eb476f9954b378e72c0138ebd21da7df",
-          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/moonshot-v0.1.0/moonshot-v0.1.0.saip.json"
+          "id": 616003900,
+          "name": "moonshot-v0.1.1.saip.json",
+          "size": 118419,
+          "digest": "sha256:fd9267c12359a6aa9e62b4c4ace420c9a7fbce9c5e4dade74f963fc6b6bbdb6b",
+          "browser_download_url": "https://github.com/yechankun/streamer-assist-ai-connectors/releases/download/moonshot-v0.1.1/moonshot-v0.1.1.saip.json"
         }
       ]
     }
