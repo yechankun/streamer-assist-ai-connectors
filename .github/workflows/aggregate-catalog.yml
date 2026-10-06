@@ -1,0 +1,170 @@
+name: Aggregate verified provider catalog
+
+on:
+  workflow_run:
+    workflows: ["Test and publish provider adapter"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ai-connector-catalog
+  cancel-in-progress: false
+
+jobs:
+  aggregate:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.name == 'Test and publish provider adapter' &&
+       github.event.workflow_run.repository.full_name == github.repository &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test provider adapter source
+        run: npm test
+      - name: Rebuild catalog from verified GitHub releases
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { MAX_CATALOG_BYTES, MAX_PACKAGE_BYTES, parseReleaseTag, selectNewestReleases, validateReleaseAsset, validateCatalogAsset, selectCatalogRows } = require('./scripts/aggregate-catalog.cjs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const repository = `${owner}/${repo}`;
+            const providerWorkflowPath = '.github/workflows/publish-provider.yml';
+
+            if (context.eventName === 'workflow_dispatch') {
+              if (context.ref !== 'refs/heads/main') throw new Error('Catalog refresh must use the main branch workflow.');
+            } else if (context.eventName === 'workflow_run') {
+              const run = context.payload.workflow_run;
+              if (!run || run.name !== 'Test and publish provider adapter' || run.conclusion !== 'success' ||
+                  run.repository?.full_name !== repository || run.head_repository?.full_name !== repository ||
+                  !['push', 'workflow_dispatch'].includes(run.event) ||
+                  typeof run.path !== 'string' || run.path.split('@')[0] !== providerWorkflowPath) {
+                throw new Error('Catalog aggregation rejected an unrelated or untrusted workflow run.');
+              }
+              if (run.event === 'push' && !parseReleaseTag(run.head_branch)) throw new Error('Successful upstream run was not a provider release tag.');
+              if (run.event === 'workflow_dispatch' && run.head_branch !== 'main') throw new Error('Provider dispatch must use the main branch.');
+              const workflows = await github.paginate(github.rest.actions.listRepoWorkflows, { owner, repo, per_page: 100 });
+              const providerWorkflow = workflows.find(item => item.path === providerWorkflowPath);
+              if (!providerWorkflow || run.workflow_id !== providerWorkflow.id) throw new Error('Upstream workflow ID does not match the trusted provider publisher.');
+            } else {
+              throw new Error('Catalog aggregation event is not supported.');
+            }
+
+            const releases = await github.paginate(github.rest.repos.listReleases, { owner, repo, per_page: 100 });
+            if (releases.length > 1000) throw new Error('Provider release history exceeds the catalog aggregation safety limit.');
+            const releasesByTag = new Map();
+            for (const release of releases) {
+              if (releasesByTag.has(release.tag_name)) throw new Error(`Duplicate GitHub release tag ${release.tag_name}.`);
+              releasesByTag.set(release.tag_name, release);
+            }
+            const newest = selectNewestReleases(releases);
+            const verified = new Map();
+
+            async function readBounded(url, maxBytes) {
+              const response = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(30000) });
+              if (!response.ok) throw new Error(`Release asset download failed with HTTP ${response.status}.`);
+              const finalUrl = new URL(response.url);
+              if (finalUrl.protocol !== 'https:' || !['github.com', 'release-assets.githubusercontent.com', 'objects.githubusercontent.com'].includes(finalUrl.hostname)) throw new Error('Release asset redirected to an untrusted host.');
+              const announced = Number(response.headers.get('content-length'));
+              if (Number.isFinite(announced) && announced > maxBytes) throw new Error('Release asset exceeds the download size limit.');
+              if (!response.body) throw new Error('Release asset response has no body.');
+              const reader = response.body.getReader();
+              const chunks = [];
+              let size = 0;
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                size += value.byteLength;
+                if (size > maxBytes) { await reader.cancel(); throw new Error('Release asset exceeds the download size limit.'); }
+                chunks.push(Buffer.from(value));
+              }
+              return Buffer.concat(chunks, size);
+            }
+
+            function uniqueAsset(release, name) {
+              if (!Array.isArray(release?.assets)) throw new Error(`Release ${release?.tag_name} has no asset list.`);
+              const matches = release.assets.filter(asset => asset?.name === name);
+              if (matches.length !== 1) throw new Error(`Release ${release.tag_name} must contain exactly one ${name}.`);
+              return matches[0];
+            }
+
+            async function verifyProviderRelease(release, expectedRow) {
+              const parsed = parseReleaseTag(release?.tag_name);
+              if (!parsed) throw new Error('Candidate provider release tag is invalid.');
+              const name = `${parsed.id}-v${parsed.version}.saip.json`;
+              const asset = uniqueAsset(release, name);
+              const url = `https://github.com/${owner}/${repo}/releases/download/${parsed.tag}/${name}`;
+              if (asset.browser_download_url !== url || !Number.isSafeInteger(asset.size) || asset.size < 1 || asset.size > MAX_PACKAGE_BYTES ||
+                  typeof asset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(asset.digest)) {
+                throw new Error(`GitHub SHA-256, size, or expected URL metadata is invalid for ${parsed.tag}.`);
+              }
+              const bytes = await readBounded(url, MAX_PACKAGE_BYTES);
+              const row = validateReleaseAsset({ release, asset, bytes, owner, repo });
+              if (expectedRow && (row.id !== expectedRow.id || row.version !== expectedRow.version || row.asset !== expectedRow.asset ||
+                  row.sha256 !== expectedRow.sha256.toLowerCase() || row.size !== expectedRow.size)) {
+                throw new Error(`Existing catalog row ${expectedRow.id} does not match its verified GitHub release asset.`);
+              }
+              verified.set(parsed.tag, row);
+              return row;
+            }
+
+            let catalogRelease = releasesByTag.get('catalog-v1') || null;
+            if (!catalogRelease) {
+              try { catalogRelease = (await github.rest.repos.getReleaseByTag({ owner, repo, tag: 'catalog-v1' })).data; }
+              catch (error) { if (error.status !== 404) throw error; }
+            }
+            let currentCatalogAsset = null;
+            let previous = null;
+            if (catalogRelease) {
+              const matches = (catalogRelease.assets || []).filter(asset => asset?.name === 'catalog.json');
+              if (matches.length > 1) throw new Error('Catalog release contains duplicate catalog.json assets.');
+              currentCatalogAsset = matches[0] || null;
+            }
+            if (currentCatalogAsset) {
+              const catalogUrl = `https://github.com/${owner}/${repo}/releases/download/catalog-v1/catalog.json`;
+              if (currentCatalogAsset.browser_download_url !== catalogUrl || !Number.isSafeInteger(currentCatalogAsset.size) ||
+                  currentCatalogAsset.size < 1 || currentCatalogAsset.size > MAX_CATALOG_BYTES ||
+                  typeof currentCatalogAsset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(currentCatalogAsset.digest)) {
+                throw new Error('Existing catalog release asset metadata is invalid.');
+              }
+              const catalogBytes = await readBounded(catalogUrl, MAX_CATALOG_BYTES);
+              previous = validateCatalogAsset({ release: catalogRelease, asset: currentCatalogAsset, bytes: catalogBytes, owner, repo });
+              for (const row of previous.components) {
+                const tag = `${row.id}-v${row.version}`;
+                const release = releasesByTag.get(tag);
+                if (!release) throw new Error(`Existing catalog entry ${row.id} has no matching provider release.`);
+                await verifyProviderRelease(release, row);
+              }
+            }
+
+            const candidates = [];
+            for (const item of newest) {
+              const release = releasesByTag.get(item.tag);
+              if (!release) throw new Error(`Provider release ${item.tag} disappeared during aggregation.`);
+              const alreadyVerified = verified.get(item.tag);
+              candidates.push(alreadyVerified || await verifyProviderRelease(release));
+            }
+            const next = selectCatalogRows(previous?.components || [], candidates, new Date().toISOString());
+            if (!next.components.length) throw new Error('No verified provider release is available for the catalog.');
+
+            if (!catalogRelease) {
+              catalogRelease = (await github.rest.repos.createRelease({ owner, repo, tag_name: 'catalog-v1', target_commitish: 'main', name: 'Provider adapter catalog v1', draft: false, prerelease: false })).data;
+            }
+            const catalogBytes = Buffer.from(`${JSON.stringify(next, null, 2)}\n`, 'utf8');
+            const catalogHash = require('node:crypto').createHash('sha256').update(catalogBytes).digest('hex');
+            if (currentCatalogAsset) await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: currentCatalogAsset.id });
+            const uploaded = (await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: catalogRelease.id, name: 'catalog.json', data: catalogBytes, headers: { 'content-type': 'application/json', 'content-length': catalogBytes.length } })).data;
+            if (uploaded.size !== catalogBytes.length || uploaded.digest !== `sha256:${catalogHash}`) throw new Error('GitHub catalog asset digest does not match the exact generated catalog bytes.');
+            core.info(`Updated digest-verified catalog with ${next.components.length} providers.`);

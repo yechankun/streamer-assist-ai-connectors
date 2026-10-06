@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ai-connector-catalog
+  group: ai-connector-provider-${{ github.ref }}-${{ inputs.provider || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -55,7 +55,7 @@ jobs:
           node -e 'const fs=require("node:fs"),m=JSON.parse(fs.readFileSync(`dist/${process.argv[1]}.metadata.json`)); if(m.version!==process.argv[2]) process.exit(1)' "$provider" "$version"
           echo "provider=$provider" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Publish provider asset and update digest-verified catalog
+      - name: Publish digest-verified provider asset
         uses: actions/github-script@v7
         env:
           PROVIDER_ID: ${{ steps.build.outputs.provider }}
@@ -64,7 +64,6 @@ jobs:
           script: |
             const fs = require('node:fs');
             const crypto = require('node:crypto');
-            const { makeCatalog } = require('./scripts/build-catalog.cjs');
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const id = process.env.PROVIDER_ID;
@@ -91,32 +90,5 @@ jobs:
             }
             if (packAsset.digest !== `sha256:${actualHash}` || packAsset.size !== packageBytes.length) throw new Error('GitHub did not report the exact SHA-256 digest and size for the package asset.');
 
-            let catalogRelease = await releaseForTag('catalog-v1', 'Provider adapter catalog v1');
-            let currentAsset = catalogRelease.assets.find(asset => asset.name === 'catalog.json');
-            let previous = null;
-            if (currentAsset) {
-              if (typeof currentAsset.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/i.test(currentAsset.digest)) throw new Error('GitHub catalog asset has no verifiable SHA-256 digest.');
-              const expectedCatalogUrl = `https://github.com/${owner}/${repo}/releases/download/catalog-v1/catalog.json`;
-              if (currentAsset.browser_download_url !== expectedCatalogUrl || currentAsset.size > 512 * 1024) throw new Error('Catalog asset URL or size is invalid.');
-              const response = await fetch(expectedCatalogUrl, { signal: AbortSignal.timeout(30000) });
-              if (!response.ok) throw new Error(`Catalog download failed with HTTP ${response.status}.`);
-              const bytes = Buffer.from(await response.arrayBuffer());
-              const catalogHash = crypto.createHash('sha256').update(bytes).digest('hex');
-              if (catalogHash !== currentAsset.digest.slice('sha256:'.length) || bytes.length !== currentAsset.size) throw new Error('Existing catalog asset digest or size does not match GitHub metadata.');
-              previous = JSON.parse(bytes.toString('utf8'));
-              if (previous.schemaVersion !== 1 || previous.repository !== `${owner}/${repo}` || previous.abiVersion !== 1 || !Array.isArray(previous.components)) throw new Error('Existing catalog uses an unsupported schema.');
-            }
-            const next = makeCatalog(previous, meta, new Date().toISOString());
-            if (previous) {
-              for (const row of previous.components) {
-                const existingRelease = (await github.rest.repos.getReleaseByTag({ owner, repo, tag: `${row.id}-v${row.version}` })).data;
-                const asset = existingRelease.assets.find(item => item.name === row.asset);
-                if (!asset || asset.digest !== `sha256:${row.sha256}` || asset.size !== row.size) throw new Error(`Existing catalog entry ${row.id} is not backed by a matching GitHub release asset digest.`);
-              }
-            }
-            const catalogBytes = Buffer.from(`${JSON.stringify(next, null, 2)}\n`, 'utf8');
-            const catalogHash = crypto.createHash('sha256').update(catalogBytes).digest('hex');
-            if (currentAsset) await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: currentAsset.id });
-            const uploaded = (await github.rest.repos.uploadReleaseAsset({ owner, repo, release_id: catalogRelease.id, name: 'catalog.json', data: catalogBytes, headers: { 'content-type': 'application/json', 'content-length': catalogBytes.length } })).data;
-            if (uploaded.size !== catalogBytes.length || uploaded.digest !== `sha256:${catalogHash}`) throw new Error('GitHub catalog asset digest or size does not match the uploaded bytes.');
-            core.info(`Published ${expectedName} and updated catalog-v1 with ${next.components.length} verified component entries.`);
+            if (providerRelease.tag_name !== tag || packAsset.name !== expectedName || packAsset.browser_download_url !== `https://github.com/${owner}/${repo}/releases/download/${tag}/${expectedName}`) throw new Error('Provider release asset identity or URL is invalid.');
+            core.info(`Published and verified ${expectedName}; catalog aggregation runs independently.`);
