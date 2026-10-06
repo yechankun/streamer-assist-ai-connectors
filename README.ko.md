@@ -14,7 +14,20 @@ Grok npm 레시피는 네이티브 패키지의 별도 `latest` 태그 대신 �
 
 ## 공급자 로그인
 
-어댑터는 로그아웃 방식도 제공합니다. Codex, Claude Code, Grok은 문서화된 로그아웃 명령을 새 로그인 전에 실행합니다. Antigravity는 TUI에서 사용자가 직접 `/logout`을 입력해야 합니다. Kimi Code는 ACP `initialize` 응답에 `agentCapabilities.auth.logout`이 있을 때만 ACP 로그아웃을 실행하며, 지원하지 않는 구버전에는 해당 요청을 보내지 않습니다. DeepSeek CLI에는 로그아웃 명령이 없으며, 앱이 저장된 암호화 API 키를 지웁니다. 호스트는 로그아웃 명령을 추측하지 않고, 상태 사전 조회로 명시적인 새 로그인 절차를 건너뛰지 않습니다.
+각 팩은 `cli.profile` 메타데이터를 제공합니다. 지원하는 프로필에는 공식 환경 변수와 공급자별 앱 프로필 기준 상대 경로를 매핑하는 `env`, 처음 만들 비밀 없는 설정 파일인 `files`, 공식 근거를 가리키는 `docs` URL이 있습니다. 데스크톱은 `userData/ai/profiles/<provider-id>` 아래에 프로필을 만들고 로그인·로그아웃·모델 조회·할당량 조회·분석의 모든 자식 프로세스에 적용합니다. PC에 설치된 기존 CLI의 인증 정보는 이 프로필로 복사하지 않습니다.
+
+| 공급자 | 공식 프로필 경로 지정 | 인증 정보 분리 |
+| --- | --- | --- |
+| OpenAI | `CODEX_HOME`, `CODEX_SQLITE_HOME` | 앱 프로필의 `config.toml`에서 인증 정보를 `CODEX_HOME` 안의 파일로 저장하도록 지정합니다. [인증 문서](https://learn.chatgpt.com/docs/auth), [환경 변수](https://learn.chatgpt.com/docs/config-file/environment-variables). |
+| DeepSeek | 같은 Codex 변수를 별도 공급자 프로필에 적용 | 브리지의 Codex 루트와 앱에 저장한 DeepSeek API 키를 독립적으로 사용합니다. |
+| Anthropic | `CLAUDE_CONFIG_DIR`, `ANTHROPIC_CONFIG_DIR` | Claude 로그인 파일과 경로별 Keychain 항목을 분리합니다. 두 번째 경로는 Console OAuth와 연합 인증 프로필 파일까지 분리합니다. [Claude 인증](https://code.claude.com/docs/en/authentication), [Anthropic 프로필 경로](https://platform.claude.com/docs/en/manage-claude/wif-reference). |
+| xAI | `GROK_HOME` | Grok의 `auth.json`과 설정·상태를 이 경로에서 관리합니다. [설정](https://docs.x.ai/build/settings), [공식 파일 경로](https://github.com/xai-org/grok-build/blob/main/crates/codegen/xai-grok-pager/docs/user-guide/14-headless-mode.md). |
+| Moonshot | `KIMI_CODE_HOME`, 이전 버전의 `KIMI_SHARE_DIR` | 네이티브 Kimi Code와 이전 Python CLI에 각각 공식 루트를 지정해 OAuth와 실행 데이터를 분리합니다. [네이티브 데이터 경로](https://moonshotai.github.io/kimi-code/en/configuration/data-locations.html), [이전 데이터 경로](https://moonshotai.github.io/kimi-cli/en/configuration/data-locations.html). |
+| Google | `supported: false` | Antigravity는 OS 자격 증명 관리자를 재사용하며 공식 문서에서 독립된 인증 이름공간을 확인하지 못했습니다. 데스크톱은 API 연결을 제공하고 공유 인증을 사용하는 CLI 동작을 차단합니다. [Antigravity 설치·인증](https://www.antigravity.google/docs/cli/install/). |
+
+호스트는 프로필 메타데이터가 없거나 지원되지 않으면 CLI 동작을 거부합니다. 상대 경로와 고정 환경 변수 이름을 검증하고 비밀 없는 초기 설정만 생성하며, OS의 `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA`는 변경하지 않습니다. API 키는 기존 데스크톱 암호화 저장소를 사용합니다.
+
+어댑터는 로그아웃 방식도 제공합니다. Codex, Claude Code, Grok은 앱 프로필 안에서 문서화된 로그아웃 명령을 새 로그인 전에 실행합니다. Kimi Code는 ACP `initialize` 응답에 `agentCapabilities.auth.logout`이 있을 때만 ACP 로그아웃을 실행하며, 지원하지 않는 구버전에는 해당 요청을 보내지 않습니다. DeepSeek CLI에는 로그아웃 명령이 없으며 앱에 저장한 암호화 API 키를 지웁니다. Antigravity의 터미널 `/logout` 레시피는 향후 공식 격리 기능이 지원될 때 사용할 메타데이터로 남으며, 프로필이 지원되지 않는 동안 실행하지 않습니다.
 
 설치된 각 어댑터는 공급자가 문서화한 CLI 진입점에 맞춘 고정 `cli.auth` 레시피를 포함합니다. Codex와 Claude Code는 문서화된 로그인·상태 명령을 사용합니다. Grok과 Kimi Code는 공식 브라우저/기기 코드 흐름을 사용하고, Antigravity는 `agy` 터미널에서 로그인을 시작합니다. DeepSeek에는 공식 코딩 CLI 로그인 명령이 없어 API 키 흐름을 사용합니다. 호스트는 고정된 인자만 실행하고, 전달되는 브라우저 URL은 어댑터의 정확한 HTTPS 호스트 허용 목록과 대조합니다.
 

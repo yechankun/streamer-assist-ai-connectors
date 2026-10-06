@@ -24,6 +24,7 @@ function buildPack(id) {
     ["lib/provider-adapter.cjs", fs.readFileSync(path.join(ROOT, "lib", "provider-adapter.cjs"))],
     ["lib/provider-common.cjs", fs.readFileSync(path.join(ROOT, "lib", "provider-common.cjs"))],
     ["lib/provider-auth.cjs", fs.readFileSync(path.join(ROOT, "lib", "provider-auth.cjs"))],
+    ["lib/provider-profile.cjs", fs.readFileSync(path.join(ROOT, "lib", "provider-profile.cjs"))],
     ["lib/runtime-recipes.cjs", fs.readFileSync(path.join(ROOT, "lib", "runtime-recipes.cjs"))],
   ].map(([filePath, bytes]) => ({ path: filePath, content: bytes.toString("base64"), sha256: hash(bytes) }));
   const payload = { schemaVersion: 1, abiVersion: 1, id, version: manifest.version, entry: manifest.entry, files };

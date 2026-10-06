@@ -144,6 +144,44 @@ test("login recipes use documented provider commands and return only safe auth s
   }
 });
 
+test("CLI authentication profiles use official data roots and keep unsupported shared keyrings explicit", () => {
+  const expected = {
+    openai: { CODEX_HOME: ".", CODEX_SQLITE_HOME: "sqlite" },
+    deepseek: { CODEX_HOME: ".", CODEX_SQLITE_HOME: "sqlite" },
+    anthropic: { CLAUDE_CONFIG_DIR: ".", ANTHROPIC_CONFIG_DIR: "anthropic" },
+    xai: { GROK_HOME: "." },
+    moonshot: { KIMI_CODE_HOME: ".", KIMI_SHARE_DIR: "." },
+  };
+  for (const [id, env] of Object.entries(expected)) {
+    const profile = adapter(id).cli.profile;
+    assert.equal(profile.supported, true);
+    assert.deepEqual(profile.env, env);
+    assert.equal(new URL(profile.docs).protocol, "https:");
+    for (const [name, value] of Object.entries(profile.env)) {
+      assert.equal(["HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA"].includes(name), false);
+      assert.ok(value === "." || /^[A-Za-z0-9_-]+$/.test(value));
+    }
+  }
+  const codexConfig = adapter("openai").cli.profile.files;
+  assert.deepEqual(codexConfig, [{ relativePath: "config.toml", contents: 'cli_auth_credentials_store = "file"\n' }]);
+  assert.deepEqual(adapter("deepseek").cli.profile.files, codexConfig);
+  assert.equal(adapter("anthropic").cli.profile.env.ANTHROPIC_CONFIG_DIR, "anthropic", "Console profiles also require an independent Anthropic credential directory");
+  assert.equal(adapter("moonshot").cli.profile.env.KIMI_CODE_HOME, ".", "the current native Kimi Code runtime does not use the legacy Python data-root name");
+  const google = adapter("google").cli.profile;
+  assert.equal(google.supported, false);
+  assert.equal(google.env, undefined);
+  assert.ok(typeof google.reason === "string" && google.reason.trim());
+  assert.equal(new URL(google.docs).hostname, "www.antigravity.google");
+
+  const { descriptor } = require("../lib/provider-profile.cjs");
+  const mutable = descriptor("openai");
+  mutable.env.CODEX_HOME = "unsafe-global-root";
+  mutable.files[0].contents = "unsafe changed configuration";
+  assert.equal(descriptor("openai").env.CODEX_HOME, ".");
+  assert.deepEqual(descriptor("openai").files, codexConfig);
+  assert.throws(() => descriptor("unknown"), /Unknown provider/);
+});
+
 test("API request builders keep credentials in headers and preserve provider-specific effort protocols", () => {
   const key = "never-put-this-in-a-url-or-error";
   const prompt = { system: "system", user: "untrusted transcript" };
@@ -368,6 +406,7 @@ test("build output matches payload envelope and catalog digest contract", () => 
       const loaded = require(path.join(extracted, payload.entry));
       assert.equal(loaded.provider.id, id);
       assert.equal(typeof loaded.cli.auth.kind, "string", "installed packs include their login recipe module");
+      assert.deepEqual(loaded.cli.profile, adapter(id).cli.profile, "installed packs preserve the authentication isolation metadata");
     } finally {
       fs.rmSync(extracted, { recursive: true, force: true });
     }
